@@ -3,11 +3,6 @@ const Schema = mongoose.Schema;
 
 const projectSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -25,12 +20,13 @@ const projectSchema = new Schema(
       required: true,
     },
     technologies: {
-      type: Array,
+      type: String,
       required: true,
     },
-    project_pictures: {
+    project_picture: {
       type: Schema.Types.Mixed,
       default: {},
+      required: true
     },
   },
   { timestamps: true, minimize: false }
