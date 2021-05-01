@@ -16,4 +16,11 @@ router.post(
   projectController.addProject
 );
 
+// PUT => /project/update
+router.put(
+  "/update",
+  handleUploadMiddleware.single("project_picture"),
+  projectController.updateProject
+);
+
 module.exports = router;
