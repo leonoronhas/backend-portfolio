@@ -22,32 +22,13 @@ let fileName = null;
 var handleUploadMiddleware = multer({
   storage: multerS3({
     s3: S3,
-    bucket: process.env.AWS_BUCKET_NAME,
+    bucket: "leonoronhas-bucket",
     acl: "public-read",
     key: (req, file, cb) => {
       fileName = getUniqFileName(file.originalname);
       cb(null, fileName);
     },
-  }),
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype === "image/png" ||
-      file.mimetype === "image/jpg" ||
-      file.mimetype === "image/jpeg" ||
-      file.mimetype === "image/gif" ||
-      file.mimetype === "video/mp4" ||
-      file.mimetype === "pdf"
-    ) {
-      cb(null, true);
-    } else {
-      cb(
-        new Error(
-          "Error while uploading file, check file format and try again"
-        ),
-        false
-      );
-    }
-  },
+  })
 });
 
 module.exports = { S3, handleUploadMiddleware };
