@@ -45,29 +45,106 @@ const getProject = async (req, res) => {
 
 const addProject = async (req, res) => {
   try {
-    const { name, link, github_link, description, technologies } = req.body;
+    const { id, name, link, github_link, description, technologies } = req.body;
     const projectPicture = req.file;
 
-    console.log(profilePicture);
-
-    const project = new Project({
-      name: name,
-      link: link,
-      github_link: github_link,
-      description: description,
-      technologies: technologies,
-      project_picture: projectPicture,
-    });
-
-    if (!project) {
+    if (
+      !id ||
+      !name ||
+      !link ||
+      !github_link ||
+      !description ||
+      !technologies ||
+      !projectPicture
+    ) {
       res.status(500).json({
         error: "Unable to add project, check input and try again",
       });
     } else {
-      await project.save();
+      const project = new Project({
+        id: id,
+        name: name,
+        link: link,
+        github_link: github_link,
+        description: description,
+        technologies: technologies,
+        project_picture: projectPicture,
+      });
+
+      if (!project) {
+        res.status(500).json({
+          error: "Unable to add project, check input and try again",
+        });
+      } else {
+        await project.save();
+
+        res.status(200).json({
+          message: "Project added successfully",
+          project,
+        });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
+};
+
+const updateProject = async (req, res) => {
+  try {
+    const {
+      projectId,
+      id,
+      name,
+      link,
+      github_link,
+      description,
+      technologies,
+    } = req.body;
+    const projectPicture = req.file;
+
+    const oldProject = await Project.findById(projectId);
+
+    if (!oldProject) {
+      res.status(404).json({
+        error: "Unable to find project, check input and try again",
+      });
+    } else {
+      let updatedProject = oldProject;
+
+      if (id) {
+        updatedProject.id = id;
+      }
+      if (name) {
+        updatedProject.name = name;
+      }
+      if (link) {
+        updatedProject.link = link;
+      }
+      if (github_link) {
+        updatedProject.github_link = github_link;
+      }
+      if (description) {
+        updatedProject.description = description;
+      }
+      if (technologies) {
+        updatedProject.technologies = technologies;
+      }
+      if (projectPicture) {
+        updatedProject.project_picture = projectPicture;
+      }
+
+      const project = await Project.findByIdAndUpdate(
+        projectId,
+        updatedProject,
+        {
+          new: true,
+        }
+      );
 
       res.status(200).json({
-        message: "Project added successfully",
+        message: "Project updated successfully",
         project,
       });
     }
@@ -78,11 +155,11 @@ const addProject = async (req, res) => {
   }
 };
 
-const updateProject = async (req, res) => {};
 const deleteProject = async (req, res) => {};
 
 module.exports = {
   getAllProjects,
   getProject,
   addProject,
+  updateProject,
 };
