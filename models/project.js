@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const projectSchema = new Schema(
   {
+    id: {
+      type: Number,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -20,7 +24,7 @@ const projectSchema = new Schema(
       required: true,
     },
     technologies: {
-      type: String,
+      type: Array,
       required: true,
     },
     project_picture: {
