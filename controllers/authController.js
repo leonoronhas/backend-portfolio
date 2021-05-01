@@ -13,7 +13,7 @@ exports.login = async (req, res, next) => {
       console.log("User not found, please contact Leo to sign up");
     }
 
-    const hashPassword = await bcrypt.compare(password, loadedUser.password);
+    const hashPassword = await bcrypt.compare(password, user.password);
 
     if (!hashPassword) {
       res.status(401).json({
@@ -23,8 +23,8 @@ exports.login = async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        email: loadedUser.email,
-        userId: loadedUser._id.toString(),
+        email: user.email,
+        userId: user._id.toString(),
       },
       process.env.JWT_TOKEN
     );
@@ -32,7 +32,7 @@ exports.login = async (req, res, next) => {
     res.status(200).json({
       message: "Token Created",
       token: token,
-      user: loadedUser,
+      user: user,
     });
   } catch (err) {
     console.log("DB error while trying to login");
@@ -44,13 +44,13 @@ exports.signup = async (req, res) => {
   let user;
 
   try {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { full_name, email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
     if (hashedPassword) {
       user = new User({
+        full_name: full_name,
         email: email,
         password: hashedPassword,
       });
@@ -67,7 +67,11 @@ exports.signup = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    if (error.code === 11000) {
+      res.status(403).json({
+        error: "Email already in use, please use a different email to sign up",
+      });
+    }
     res.status(500).json({
       error: error,
     });
