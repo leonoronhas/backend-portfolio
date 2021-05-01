@@ -18,7 +18,7 @@ router.post(
 
 // PUT => /project/update
 router.put(
-  "/update",
+  "/update/:id",
   handleUploadMiddleware.single("project_picture"),
   projectController.updateProject
 );
