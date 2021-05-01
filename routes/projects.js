@@ -23,4 +23,10 @@ router.put(
   projectController.updateProject
 );
 
+// DELETE => /project/delete/:id
+router.delete(
+  "/delete/:id",
+  projectController.deleteProject
+);
+
 module.exports = router;
