@@ -94,7 +94,6 @@ const addProject = async (req, res) => {
 const updateProject = async (req, res) => {
   try {
     const {
-      projectId,
       id,
       name,
       link,
@@ -102,6 +101,7 @@ const updateProject = async (req, res) => {
       description,
       technologies,
     } = req.body;
+    const projectId = req.params.id;
     const projectPicture = req.file;
 
     const oldProject = await Project.findById(projectId);
