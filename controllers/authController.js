@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require("dotenv").config();
 
-exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -40,7 +40,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.signup = async (req, res) => {
+const signup = async (req, res) => {
   let user;
 
   try {
@@ -76,4 +76,9 @@ exports.signup = async (req, res) => {
       error: error,
     });
   }
+};
+
+module.exports = {
+  login,
+  signup,
 };
